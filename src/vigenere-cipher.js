@@ -1,4 +1,4 @@
-const { NotImplementedError } = require('../lib');
+const { NotImplementedError } = require("../lib");
 
 /**
  * Implement class VigenereCipheringMachine that allows us to create
@@ -20,14 +20,30 @@ const { NotImplementedError } = require('../lib');
  *
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+  constructor(direction = true) {
+    this.direction = direction;
+  }
+  encrypt(message, key, base = true) {
+    if (!message || !key) throw new Error("Incorrect arguments!");
+    message = message.toUpperCase();
+    key = key.toUpperCase();
+    let i = 0;
+    let w = "";
+    for (let c of message) {
+      if (/[A-Z]/.test(c)) {
+        const code = c.codePointAt(0) - "A".codePointAt(0);
+        let plus = key[i % key.length].codePointAt(0) - "A".codePointAt(0);
+        if (!base) plus = -plus;
+        w += String.fromCharCode(65 + ((code + plus + 26) % 26));
+        i++;
+      } else w += c;
+    }
+    if (!this.direction) return w.split("").reverse().join("");
+    return w;
   }
 
-  decrypt() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+  decrypt(message, key) {
+    return this.encrypt(message, key, false);
   }
 }
 
